@@ -229,12 +229,12 @@ See [model_card.md](model_card.md) for a deeper analysis.
 
 ## Reflection
 
-Read and complete `model_card.md`:
+Full reflection and model analysis: [**model_card.md**](model_card.md)
 
-[**Model Card**](model_card.md)
+Building this taught me that a recommender is really two steps: **scoring** (judge each song on its own) and **ranking** (pick the best ones from the full list). You need both — scoring alone gives you 20 numbers with nothing to compare, and ranking alone has nothing to sort.
 
-Building this recommender made clear that a recommendation system is really two separate problems: judging quality (the scoring rule) and making choices (the ranking rule). You cannot skip either step, and the order matters — scoring happens in isolation per song, ranking only happens after every song has been judged.
+The most eye-opening moment was *Gym Hero* showing up second on a "happy pop morning" playlist even though its mood is "intense." The genre label matched, and that was worth enough points to beat a song with the right mood. Changing one weight number fixed it — which showed how much the output depends on choices that look tiny in the code.
 
-The most revealing moment was seeing *Gym Hero* appear second in the Weekend Morning results despite having the wrong mood. The genre match alone (+2.0) outweighed a missed mood (+1.5), which means the system can serve up a song that feels slightly off even when the math looks reasonable. That gap between "mathematically close" and "actually what the user wants" is where real recommender systems spend most of their engineering effort — and it shows why platforms like Spotify use listening history and implicit feedback rather than static preferences.
+The strangest result came from testing a profile that wanted high-energy but sad music. The system returned a slow, quiet blues song at the top with a high score. The code was not broken. It just followed its rules, and the rules said the genre and mood labels mattered more than the energy gap. That is the core problem with fixed weights: they cannot adjust for what a specific person actually cares about most.
 
 ---

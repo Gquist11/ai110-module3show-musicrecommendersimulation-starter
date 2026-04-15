@@ -98,10 +98,10 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     Scores a single song against user preferences using a points-based recipe.
     Required by recommend_songs() and src/main.py
 
-    Algorithm Recipe (max 5.5 points):
-      +2.0  genre match        (exact)
+    Algorithm Recipe (max 5.0 points) — EXPERIMENTAL weight shift:
+      +1.0  genre match        (exact)   ← halved from 2.0
       +1.5  mood match         (exact)
-      +1.0  energy similarity  (1.0 x (1 - |user - song|))
+      +2.0  energy similarity  (2.0 x (1 - |user - song|))  ← doubled from 1.0
       +0.5  valence similarity (0.5 x (1 - |user - song|))
 
     Why this order:
@@ -115,8 +115,8 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     reasons = []
 
     if user_prefs.get('genre') and song['genre'] == user_prefs['genre']:
-        score += 2.0
-        reasons.append(f"genre match ({song['genre']}) +2.0")
+        score += 1.0
+        reasons.append(f"genre match ({song['genre']}) +1.0")
 
     if user_prefs.get('mood') and song['mood'] == user_prefs['mood']:
         score += 1.5
@@ -124,7 +124,7 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
 
     if user_prefs.get('energy') is not None:
         proximity = 1 - abs(user_prefs['energy'] - song['energy'])
-        points = round(1.0 * proximity, 2)
+        points = round(2.0 * proximity, 2)
         score += points
         reasons.append(f"energy {song['energy']:.2f} vs target {user_prefs['energy']:.2f} +{points}")
 
